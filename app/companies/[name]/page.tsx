@@ -1,13 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { CompanyChart } from "@/components/charts/company-chart";
 
 async function getCompanyData(name: string) {
   return prisma.company.findFirst({
@@ -99,9 +92,11 @@ export default async function CompanyPage({
 
           <h2 className="mt-2 text-3xl font-bold">
             {
-              company.entries[
-                company.entries.length - 1
-              ]?.level
+              company.entries.length > 0
+                ? company.entries[
+                    company.entries.length - 1
+                  ].level
+                : "N/A"
             }
           </h2>
         </div>
@@ -112,25 +107,7 @@ export default async function CompanyPage({
           Compensation by Level
         </h2>
 
-        <div className="h-[400px]">
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-          >
-            <BarChart data={chartData}>
-              <XAxis dataKey="level" />
-
-              <YAxis />
-
-              <Tooltip />
-
-              <Bar
-                dataKey="compensation"
-                radius={[6, 6, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <CompanyChart data={chartData} />
       </div>
     </main>
   );
