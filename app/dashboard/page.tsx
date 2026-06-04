@@ -5,22 +5,20 @@ import { CompensationFilters } from "@/components/filters/compensation-filters";
 interface Props {
   searchParams: Promise<{
     search?: string;
-
     company?: string;
-
     location?: string;
-
     level?: string;
   }>;
 }
 
+const baseUrl =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  "http://localhost:3000";
+
 async function getCompensations(params: {
   search?: string;
-
   company?: string;
-
   location?: string;
-
   level?: string;
 }) {
   const query = new URLSearchParams(
@@ -28,30 +26,47 @@ async function getCompensations(params: {
   ).toString();
 
   const res = await fetch(
-    `http://localhost:3000/api/compensations?${query}`,
+    `${baseUrl}/api/compensations?${query}`,
     {
       cache: "no-store",
     }
   );
 
+  if (!res.ok) {
+    throw new Error(
+      "Failed to fetch compensations"
+    );
+  }
+
   return res.json();
 }
+
 async function getStats() {
   const res = await fetch(
-    "http://localhost:3000/api/stats",
+    `${baseUrl}/api/stats`,
     {
       cache: "no-store",
     }
   );
-  
+
+  if (!res.ok) {
+    throw new Error(
+      "Failed to fetch stats"
+    );
+  }
+
   return res.json();
 }
+
 export default async function DashboardPage({
   searchParams,
 }: Props) {
   const params = await searchParams;
+
   const statsData = await getStats();
-  const data = await getCompensations(params);
+
+  const data =
+    await getCompensations(params);
 
   return (
     <main className="mx-auto max-w-7xl p-8">
@@ -61,12 +76,15 @@ export default async function DashboardPage({
         </h1>
 
         <p className="mt-2 text-muted-foreground">
-          Compare compensation across top tech companies.
+          Compare compensation across top tech
+          companies.
         </p>
       </div>
-      <div className="rounded-xl border bg-card p-6 transition hover:border-white/40 hover:scale-[1.01]">
+
+      <div className="rounded-xl border bg-card p-6 transition hover:scale-[1.01] hover:border-white/40">
         <StatsCards stats={statsData.stats} />
       </div>
+
       <CompensationFilters />
 
       <CompensationTable data={data.data} />
