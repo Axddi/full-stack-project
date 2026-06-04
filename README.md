@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Architecture Decisions
 
-## Getting Started
+## Why Next.js App Router
 
-First, run the development server:
+The App Router was chosen because it provides:
+- server components
+- nested layouts
+- scalable routing
+- improved data-fetching patterns
+- better long-term extensibility
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This architecture keeps frontend and backend workflows structured while supporting production-style routing patterns.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Why Prisma ORM
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Prisma was selected because it provides:
+- type-safe database access
+- schema-driven development
+- strong PostgreSQL support
+- scalable relational querying
+- clean migration workflows
 
-## Learn More
+This significantly improves developer reliability and maintainability.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Database Normalization Strategy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The database architecture separates:
+- companies
+- compensation entries
 
-## Deploy on Vercel
+This normalization approach:
+- prevents duplicate company records
+- improves query scalability
+- supports analytics workflows
+- enables structured comparisons
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Company names are normalized before insertion to reduce inconsistencies such as:
+- Google India
+- Google LLC
+- Google Pvt Ltd
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+all mapping into a consistent normalized representation.
+
+---
+
+## Why Server Rendering
+
+Server rendering was used for:
+- dashboard data
+- analytics pages
+- company insights
+
+Benefits:
+- improved reliability
+- reduced client-side complexity
+- better data consistency
+- scalable rendering patterns
+
+This aligns well with analytics-oriented applications.
+
+---
+
+## API Architecture
+
+The application uses route-based API handlers for:
+- compensation fetching
+- filtering
+- analytics
+- comparison workflows
+- compensation submissions
+
+This keeps frontend and backend concerns modular and extensible.
+
+---
+
+# Tradeoffs
+
+## Prioritized
+- clean architecture
+- scalable backend design
+- reliable data workflows
+- structured compensation systems
+
+## Deprioritized
+- authentication complexity
+- excessive UI animations
+- social/community features
+- premature microservice patterns
+
+The goal was to build a focused MVP with strong engineering fundamentals.
+
+---
+
+# Scaling Considerations
+
+The architecture was designed with future scalability in mind.
+
+Potential future improvements:
+- Redis caching
+- full-text search
+- advanced analytics pipelines
+- authentication and saved comparisons
+- pagination optimization
+- event-driven ingestion workflows
+
+The current structure supports these upgrades without major rewrites.
