@@ -12,11 +12,6 @@ interface Props {
 }
 
 
-const baseUrl =
-  (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
-  process.env.NEXT_PUBLIC_APP_URL ||
-  "http://localhost:3000";
-
 async function getCompensations(params: {
   search?: string;
   company?: string;
@@ -28,7 +23,7 @@ async function getCompensations(params: {
   ).toString();
 
   const res = await fetch(
-    `${baseUrl}/api/compensations?${query}`,
+    `/api/compensations?${query}`,
     {
       cache: "no-store",
     }
@@ -45,7 +40,7 @@ async function getCompensations(params: {
 
 async function getStats() {
   const res = await fetch(
-    `${baseUrl}/api/stats`,
+    `/api/stats`,
     {
       cache: "no-store",
     }
