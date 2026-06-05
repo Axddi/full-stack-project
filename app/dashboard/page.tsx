@@ -18,41 +18,59 @@ async function getCompensations(params: {
   location?: string;
   level?: string;
 }) {
-  const query = new URLSearchParams(
-    params as Record<string, string>
-  ).toString();
+  try {
+    const query = new URLSearchParams(
+      params as Record<string, string>
+    ).toString();
 
-  const res = await fetch(
-    `/api/compensations?${query}`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error(
-      "Failed to fetch compensations"
+    const res = await fetch(
+      `/api/compensations?${query}`,
+      {
+        cache: "no-store",
+      }
     );
-  }
 
-  return res.json();
+    if (!res.ok) {
+      return { data: [], pagination: {} };
+    }
+
+    return res.json();
+  } catch {
+    return { data: [], pagination: {} };
+  }
 }
 
 async function getStats() {
-  const res = await fetch(
-    `/api/stats`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error(
-      "Failed to fetch stats"
+  try {
+    const res = await fetch(
+      `/api/stats`,
+      {
+        cache: "no-store",
+      }
     );
-  }
 
-  return res.json();
+    if (!res.ok) {
+      return {
+        stats: {
+          averageCompensation: 0,
+          highestPayingCompany: "N/A",
+          highestCompensation: 0,
+          totalEntries: 0,
+        },
+      };
+    }
+
+    return res.json();
+  } catch {
+    return {
+      stats: {
+        averageCompensation: 0,
+        highestPayingCompany: "N/A",
+        highestCompensation: 0,
+        totalEntries: 0,
+      },
+    };
+  }
 }
 
 export default async function DashboardPage({
