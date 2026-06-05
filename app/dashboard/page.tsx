@@ -1,6 +1,7 @@
 import { CompensationTable } from "@/components/tables/compensation-table";
 import { StatsCards } from "@/components/charts/stats-cards";
 import { CompensationFilters } from "@/components/filters/compensation-filters";
+import { headers } from "next/headers";
 
 interface Props {
   searchParams: Promise<{
@@ -11,6 +12,12 @@ interface Props {
   }>;
 }
 
+async function getBaseUrl() {
+  const headersList = await headers();
+  const host = headersList.get("host") || "localhost:3000";
+  const protocol = headersList.get("x-forwarded-proto") || "http";
+  return `${protocol}://${host}`;
+}
 
 async function getCompensations(params: {
   search?: string;
@@ -19,12 +26,13 @@ async function getCompensations(params: {
   level?: string;
 }) {
   try {
+    const baseUrl = await getBaseUrl();
     const query = new URLSearchParams(
       params as Record<string, string>
     ).toString();
 
     const res = await fetch(
-      `/api/compensations?${query}`,
+      `${baseUrl}/api/compensations?${query}`,
       {
         cache: "no-store",
       }
@@ -42,8 +50,9 @@ async function getCompensations(params: {
 
 async function getStats() {
   try {
+    const baseUrl = await getBaseUrl();
     const res = await fetch(
-      `/api/stats`,
+      `${baseUrl}/api/stats`,
       {
         cache: "no-store",
       }
