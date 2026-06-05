@@ -75,13 +75,12 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Compensations API Error:", error);
 
     return NextResponse.json(
       {
         success: false,
-
-        message: "Failed to fetch compensations",
+        error: error instanceof Error ? error.message : "Unknown error",
       },
 
       {
